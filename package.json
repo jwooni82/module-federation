@@ -1,7 +1,19 @@
 {
+    "name": "vite-module-federation-example",
     "private": true,
     "workspaces": [
       "host-app",
       "remote-app"
-    ]
+    ],
+    "scripts": {
+      "remote:dev": "cd remote-app && yarn dev",
+      "host:dev": "cd host-app && yarn dev",
+      "dev": "concurrently \"yarn remote:dev\" \"yarn host:dev\"",
+      "remote:build": "cd remote-app && yarn build",
+      "host:build": "cd host-app && yarn build",
+      "build": "yarn remote:build && yarn host:build"
+    },
+    "devDependencies": {
+      "concurrently": "^8.2.2"
+    }
   }
