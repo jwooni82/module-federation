@@ -29,6 +29,7 @@ module.exports = {
     }),
     new ModuleFederationPlugin({
       name: 'hostApp',
+      filename: 'remoteEntry.js',
       exposes: {
         './context': './src/context',
       },

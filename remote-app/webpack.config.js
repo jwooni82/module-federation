@@ -34,13 +34,12 @@ module.exports = {
         './RemoteCounter': './src/RemoteCounter',
         './BigComponent': './src/BigComponent',
       },
-      // remotes: {
-      //   hostApp: 'hostApp@http://localhost:3000/remoteEntry.js',
-      // },
+      remotes: {
+        hostApp: 'hostApp@http://localhost:3000/remoteEntry.js',
+      },
       shared: {
         react: { singleton: true, eager: true, requiredVersion: '^18.0.0' },
         'react-dom': { singleton: true, eager: true, requiredVersion: '^18.0.0' },
-        '@paciolan/remote-component': { singleton: true, eager: true, requiredVersion: '*' },
       },
     }),
   ],

@@ -1,9 +1,10 @@
 import React from 'react';
-//import { useCounter } from 'hostApp/context';
+import { useCounter } from 'hostApp/context';
 
 const RemoteCounter = () => {
-  const { count, increment, decrement } = {};//useCounter();
-
+  const counter = useCounter();
+  console.log("counter = " , counter)
+  const { count, increment, decrement } ={};
   return (
     <div style={{ border: '1px solid lightgray', padding: '20px', margin: '10px' }}>
       <h2>Remote Counter from Remote App</h2>
