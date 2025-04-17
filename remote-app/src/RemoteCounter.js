@@ -1,18 +1,36 @@
 import React from 'react';
-import { useCounter } from 'hostApp/context';
+import { useSelector, useDispatch } from 'react-redux';
+import store from 'hostApp/store';
+import { increment, decrement } from 'hostApp/actions';
 
 const RemoteCounter = () => {
-  const counter = useCounter();
-  console.log("counter = " , counter)
-  const { count, increment, decrement } ={};
+  console.log('RemoteCounter 렌더링');
+  
+  const count = useSelector(state => {
+    console.log('state 변경 감지:', state);
+    return state.counter.count;
+  });
+  
+  const dispatch = useDispatch();
+
+  const handleIncrement = () => {
+    console.log('Increment 버튼 클릭');
+    dispatch(increment());
+  };
+
+  const handleDecrement = () => {
+    console.log('Decrement 버튼 클릭');
+    dispatch(decrement());
+  };
+
   return (
     <div style={{ border: '1px solid lightgray', padding: '20px', margin: '10px' }}>
       <h2>Remote Counter from Remote App</h2>
       <p>Count: {count}</p>
-      <button onClick={increment}>Increment</button>
-      <button onClick={decrement}>Decrement</button>
+      <button onClick={handleIncrement}>Increment</button>
+      <button onClick={handleDecrement}>Decrement</button>
     </div>
   );
 };
 
-export default RemoteCounter;
+export default React.memo(RemoteCounter);

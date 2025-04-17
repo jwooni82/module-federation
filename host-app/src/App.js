@@ -1,10 +1,11 @@
 import React, { Suspense, lazy } from 'react';
-import { CounterProvider } from './context';
+import { Provider } from 'react-redux';
+import store from './store/index.js';
 const RemoteCounter = lazy(() => import('remoteApp/RemoteCounter'));
 const RemoteBigComponent = lazy(() => import('remoteApp/BigComponent'));
 
 const App = () => (
-  <CounterProvider>
+  <Provider store={store}>
     <h1>Host Application</h1>
     <Suspense fallback={<div>Loading Remote Counter...</div>}>
       <RemoteCounter />
@@ -12,7 +13,7 @@ const App = () => (
     <Suspense fallback={<div>Loading Remote Big Component...</div>}>
       <RemoteBigComponent />
     </Suspense>
-  </CounterProvider>
+  </Provider>
 );
 
 export default App;

@@ -35,7 +35,7 @@ module.exports = {
         './BigComponent': './src/BigComponent',
       },
       remotes: {
-        hostApp: 'hostApp@http://localhost:3000/remoteEntry.js',
+        hostApp: 'hostApp@http://localhost:3000/hostEntry.js',
       },
       shared: {
         react: { singleton: true, eager: true, requiredVersion: '^18.0.0' },
