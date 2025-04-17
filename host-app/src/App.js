@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Provider } from 'react-redux';
-import store from './store/index.js';
+import store from './store';
 const RemoteCounter = lazy(() => import('remoteApp/RemoteCounter'));
 const RemoteBigComponent = lazy(() => import('remoteApp/BigComponent'));
 

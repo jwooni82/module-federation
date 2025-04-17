@@ -1,7 +1,5 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import store from 'hostApp/store';
-import { increment, decrement } from 'hostApp/actions';
 
 const RemoteCounter = () => {
   console.log('RemoteCounter 렌더링');
