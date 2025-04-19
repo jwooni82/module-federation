@@ -1,16 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Provider } from 'react-redux';
+import { Provider, useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
-import store from './store';
 import { Table, Button } from 'antd';
+import styled from 'styled-components';
+import { StoreContext } from './store/context';
+import store from './store';
 
 const { loadRemoteModule } = require('./component/loadRemoteModule');
+
+const StyledTable = styled(Table)`
+  .ant-table {
+    .ant-table-thead > tr > th {
+      font-size: 18px;
+      font-weight: bold;
+      background-color: #1890ff;
+      color: #fff;
+    }
+
+    .ant-table-tbody > tr > td {
+      font-size: 16px;
+    }
+  }
+`;
 
 const AppContent = () => {
   const [RemoteApp, setRemoteApp] = useState(null);
   const [RemoteApp2, setRemoteApp2] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const hostCount = useSelector(state => state.count);
+  const dispatch = useDispatch();
 
   // RemoteApp1은 app1로 들어갈 때만 로드
   useEffect(() => {
@@ -114,49 +133,58 @@ const AppContent = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Host Application</h1>
-      
-      <div style={{ marginBottom: '20px' }}>
-        <h2>Host App Table</h2>
-        <Table dataSource={hostDataSource} columns={hostColumns} />
-      </div>
+    <StoreContext.Provider value={store}>
+      <div style={{ padding: '20px' }}>
+        <h1>Host Application</h1>
+        
+        <div style={{ marginBottom: '20px' }}>
+          <h2>Host Counter: {hostCount}</h2>
+          <Button type="primary" onClick={() => dispatch({ type: 'INCREMENT_HOST' })}>
+            Increase Host Counter
+          </Button>
+        </div>
 
-      <div style={{ marginBottom: '20px' }}>
-        <Link to="/app1/counter" style={{ marginRight: '10px' }}>
-          <Button type={location.pathname.startsWith('/app1') ? 'primary' : 'default'}>Remote App 1</Button>
-        </Link>
-        <Link to="/app2/counter" style={{ marginRight: '10px' }}>
-          <Button type={location.pathname.startsWith('/app2') ? 'primary' : 'default'}>Remote App 2</Button>
-        </Link>
-        <Link to="/app3">
-          <Button type={location.pathname.startsWith('/app3') ? 'primary' : 'default'}>Host App 3</Button>
-        </Link>
-      </div>
+        <div style={{ marginBottom: '20px' }}>
+          <h2>Host App Table</h2>
+          <StyledTable dataSource={hostDataSource} columns={hostColumns} />
+        </div>
 
-      <div>
-        <Routes>
-          <Route 
-            path="/app1/*" 
-            element={RemoteApp && <RemoteApp onNavigate={onNavigate} />} 
-          />
-          <Route 
-            path="/app2/*" 
-            element={RemoteApp2 && <RemoteApp2 onNavigate={onNavigate} />} 
-          />
-          <Route 
-            path="/app3" 
-            element={
-              <div>
-                <h2>Host App 3 Content</h2>
-                <p>This is a host app route without remote loading.</p>
-              </div>
-            } 
-          />
-          <Route path="/" element={<div>Select a remote app</div>} />
-        </Routes>
+        <div style={{ marginBottom: '20px' }}>
+          <Link to="/app1/counter" style={{ marginRight: '10px' }}>
+            <Button type={location.pathname.startsWith('/app1') ? 'primary' : 'default'}>Remote App 1</Button>
+          </Link>
+          <Link to="/app2/counter" style={{ marginRight: '10px' }}>
+            <Button type={location.pathname.startsWith('/app2') ? 'primary' : 'default'}>Remote App 2</Button>
+          </Link>
+          <Link to="/app3">
+            <Button type={location.pathname.startsWith('/app3') ? 'primary' : 'default'}>Host App 3</Button>
+          </Link>
+        </div>
+
+        <div>
+          <Routes>
+            <Route 
+              path="/app1/*" 
+              element={RemoteApp && <RemoteApp onNavigate={onNavigate} hostStore={store} />} 
+            />
+            <Route 
+              path="/app2/*" 
+              element={RemoteApp2 && <RemoteApp2 onNavigate={onNavigate} hostStore={store} />} 
+            />
+            <Route 
+              path="/app3" 
+              element={
+                <div>
+                  <h2>Host App 3 Content</h2>
+                  <p>This is a host app route without remote loading.</p>
+                </div>
+              } 
+            />
+            <Route path="/" element={<div>Select a remote app</div>} />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </StoreContext.Provider>
   );
 };
 

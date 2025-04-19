@@ -1,19 +1,8 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import createSagaMiddleware from 'redux-saga';
-import counterReducer from './counter/reducer.js';
-import { counterSaga } from './counter/saga.js';
+import { createStore } from 'redux';
+import { hostReducer } from './reducer';
 
-const rootReducer = combineReducers({
-  counter: counterReducer
-});
+const store = createStore(hostReducer);
 
-const sagaMiddleware = createSagaMiddleware();
-
-const store = createStore(
-  rootReducer,
-  applyMiddleware(sagaMiddleware)
-);
-
-sagaMiddleware.run(counterSaga);
-
+// remote-app에서 접근할 수 있도록 store를 export
+export const getHostStore = () => store;
 export default store; 

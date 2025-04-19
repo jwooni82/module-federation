@@ -1,7 +1,9 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import styled from 'styled-components';
 import RemoteCounter from './RemoteCounter';
 import BigComponent from './BigComponent';
-import styled from 'styled-components';
+import { remoteStore } from './store';
 
 const Nav = styled.nav`
   background-color: #f0f0f0;
@@ -24,24 +26,18 @@ const Nav = styled.nav`
   }
 `;
 
-const RemoteApp = ({ onNavigate }) => {
-  const handleClick = (view) => {
-    if (onNavigate && onNavigate.setCurrentView) {
-      onNavigate.setCurrentView(view);
-    }
-  };
-
+const RemoteApp = ({ onNavigate, hostStore }) => {
   return (
-    <div>
-      <Nav>
-        <button onClick={() => handleClick('counter')}>Counter</button>
-        <button onClick={() => handleClick('big')}>Big Component</button>
-      </Nav>
+    <Provider store={remoteStore}>
       <div>
-        {onNavigate.currentView === 'counter' && <RemoteCounter />}
+        <Nav>
+          <button onClick={() => onNavigate.setCurrentView('counter')}>Counter</button>
+          <button onClick={() => onNavigate.setCurrentView('big')}>Big Component</button>
+        </Nav>
+        {onNavigate.currentView === 'counter' && <RemoteCounter hostStore={hostStore} />}
         {onNavigate.currentView === 'big' && <BigComponent />}
       </div>
-    </div>
+    </Provider>
   );
 };
 

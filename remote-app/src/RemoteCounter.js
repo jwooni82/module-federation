@@ -1,6 +1,6 @@
-import React from 'react';
-import { Table, Button } from 'antd';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Table, Button } from 'antd';
 import styled from 'styled-components';
 
 const StyledTable = styled(Table)`
@@ -18,25 +18,25 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const RemoteCounter = () => {
-  console.log('RemoteCounter 렌더링');
-  
-  const count = useSelector(state => {
-    console.log('state 변경 감지:', state);
-    return state.count;
-  });
-  
+const RemoteCounter = ({ hostStore }) => {
+  const count = useSelector(state => state.count);
+  const [hostCount, setHostCount] = useState(0);
   const dispatch = useDispatch();
 
-  const handleIncrement = () => {
-    console.log('Increment 버튼 클릭');
-    dispatch(increment());
-  };
+  useEffect(() => {
+    if (!hostStore) return;
+    
+    // 초기값 설정
+    setHostCount(hostStore.getState().count);
+    
+    // store 변경 구독
+    const unsubscribe = hostStore.subscribe(() => {
+      setHostCount(hostStore.getState().count);
+    });
 
-  const handleDecrement = () => {
-    console.log('Decrement 버튼 클릭');
-    dispatch(decrement());
-  };
+    // cleanup
+    return () => unsubscribe();
+  }, [hostStore]);
 
   // 테이블 데이터
   const dataSource = [
@@ -82,9 +82,10 @@ const RemoteCounter = () => {
   return (
     <div style={{ border: '1px solid lightgray', padding: '20px', margin: '10px' }}>
       <h2>Remote Counter from Remote App</h2>
-      <p>Count: {count}</p>
-      <Button type="primary" onClick={handleIncrement}>Increment</Button>
-      <Button style={{ marginLeft: '10px' }} onClick={handleDecrement}>Decrement</Button>
+      <p>Remote Count: {count}</p>
+      <p>Host Count: {hostCount}</p>
+      <Button type="primary" onClick={() => dispatch({ type: 'INCREMENT' })}>Increment</Button>
+      <Button style={{ marginLeft: '10px' }} onClick={() => dispatch({ type: 'DECREMENT' })}>Decrement</Button>
       
       <div style={{ marginTop: '20px' }}>
         <h3>Ant Design Table Example</h3>

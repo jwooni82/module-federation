@@ -7,6 +7,9 @@ module.exports = {
   entry: './src/index',
   mode: 'development',
   devServer: {
+    static: {
+      directory: path.join(__dirname, 'public'),
+    },
     port: 3000,
     historyApiFallback: true,
   },
@@ -26,30 +29,29 @@ module.exports = {
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
-    }),
     new ModuleFederationPlugin({
       name: 'hostApp',
       filename: 'hostEntry.js',
-      exposes: {
-        './store': './src/store/index.js',
-        './actions': './src/store/counter/actions.js',
-      },
       remotes: {
         remoteApp: 'remoteApp@http://localhost:3001/remoteEntry.js',
         remoteApp2: 'remoteApp2@http://localhost:3002/remoteEntry.js',
+      },
+      exposes: {
+        './store': './src/store',
+        './store/context': './src/store/context',
       },
       shared: {
         react: { singleton: true, eager: true, requiredVersion: '^18.0.0' },
         'react-dom': { singleton: true, eager: true, requiredVersion: '^18.0.0' },
         'react-redux': { singleton: true, eager: true, requiredVersion: '^9.1.0' },
         redux: { singleton: true, eager: true, requiredVersion: '^5.0.1' },
-        'redux-saga': { singleton: true, eager: true, requiredVersion: '^1.3.0' },
+        'react-router-dom': { singleton: true, eager: true, requiredVersion: '^6.20.0' },
         antd: { singleton: true, eager: true, requiredVersion: '^5.0.0' },
-        'styled-components': { singleton: true, eager: true, requiredVersion: '^6.0.0' },
-        'react-router-dom': { singleton: true, eager: true, requiredVersion: '^6.20.0' }
+        'styled-components': { singleton: true, eager: true, requiredVersion: '^6.0.0' }
       },
+    }),
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
     }),
     new BundleAnalyzerPlugin({
       analyzerMode: 'server',
