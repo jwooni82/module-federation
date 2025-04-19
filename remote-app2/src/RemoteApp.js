@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Provider } from 'react-redux';
 import styled from 'styled-components';
 import RemoteCounter from './RemoteCounter';
-import BigComponent from './BigComponent';
 import { remoteStore } from './store';
 
 const Nav = styled.nav`
@@ -26,12 +25,9 @@ const Nav = styled.nav`
   }
 `;
 
-const RemoteApp = (props = {}) => {
-  console.log("RemoteApp props = " , props);
-  if(props == null) {
-    return null;
-  }
-  const { onNavigate , hostStore } = props;
+const BigComponent = React.lazy(() => import('./BigComponent'));
+
+const RemoteApp = ({ onNavigate = {}, hostStore }) => {
   const { currentView = 'counter', setCurrentView = () => {} } = onNavigate;
 
   return (
@@ -42,7 +38,11 @@ const RemoteApp = (props = {}) => {
           <button onClick={() => setCurrentView('big')}>Big Component</button>
         </Nav>
         {currentView === 'counter' && <RemoteCounter hostStore={hostStore} />}
-        {currentView === 'big' && <BigComponent />}
+        {currentView === 'big' && (
+          <Suspense fallback={<div>Loading...</div>}>
+            <BigComponent />
+          </Suspense>
+        )}
       </div>
     </Provider>
   );
