@@ -4,17 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 const StyledTable = styled(Table)`
-  .ant-table {
-    .ant-table-thead > tr > th {
-      font-size: 18px;
-      font-weight: bold;
-      background-color: #ffa39e;
-      color: #fff;
-    }
-
-    .ant-table-tbody > tr > td {
-      font-size: 16px;
-    }
+  .ant-table-thead > tr > th {
+    background-color: #52c41a !important;
+    color: white !important;
+  }
+  
+  .ant-table-tbody > tr:hover > td {
+    background-color: #e6f7d9 !important;
   }
 `;
 
@@ -42,21 +38,21 @@ const RemoteCounter = () => {
   const dataSource = [
     {
       key: '1',
-      name: 'John Doe',
-      age: 32,
-      address: 'New York',
+      name: 'Remote User 1',
+      age: 25,
+      address: 'Seoul',
     },
     {
       key: '2',
-      name: 'Jane Smith',
-      age: 28,
-      address: 'Los Angeles',
+      name: 'Remote User 2',
+      age: 30,
+      address: 'Busan',
     },
     {
       key: '3',
-      name: 'Bob Johnson',
-      age: 45,
-      address: 'Chicago',
+      name: 'Remote User 3',
+      age: 35,
+      address: 'Incheon',
     },
   ];
 
