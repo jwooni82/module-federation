@@ -24,6 +24,8 @@ const AppContent = () => {
         } catch (error) {
           console.error('Failed to load RemoteApp:', error);
         }
+      } else {
+        setRemoteApp(null);
       }
     };
 
@@ -42,6 +44,8 @@ const AppContent = () => {
         } catch (error) {
           console.error('Failed to load RemoteApp2:', error);
         }
+      } else {
+        setRemoteApp2(null);
       }
     };
 
@@ -104,6 +108,11 @@ const AppContent = () => {
     return 'counter';
   };
 
+  const onNavigate = {
+    currentView: getCurrentView(),
+    setCurrentView: handleRemoteNavigate
+  };
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Host Application</h1>
@@ -117,8 +126,11 @@ const AppContent = () => {
         <Link to="/app1/counter" style={{ marginRight: '10px' }}>
           <Button type={location.pathname.startsWith('/app1') ? 'primary' : 'default'}>Remote App 1</Button>
         </Link>
-        <Link to="/app2/counter">
+        <Link to="/app2/counter" style={{ marginRight: '10px' }}>
           <Button type={location.pathname.startsWith('/app2') ? 'primary' : 'default'}>Remote App 2</Button>
+        </Link>
+        <Link to="/app3">
+          <Button type={location.pathname.startsWith('/app3') ? 'primary' : 'default'}>Host App 3</Button>
         </Link>
       </div>
 
@@ -126,25 +138,20 @@ const AppContent = () => {
         <Routes>
           <Route 
             path="/app1/*" 
-            element={RemoteApp && (
-              <RemoteApp 
-                onNavigate={{
-                  currentView: getCurrentView(),
-                  setCurrentView: handleRemoteNavigate
-                }} 
-              />
-            )} 
+            element={RemoteApp && <RemoteApp onNavigate={onNavigate} />} 
           />
           <Route 
             path="/app2/*" 
-            element={RemoteApp2 && (
-              <RemoteApp2 
-                onNavigate={{
-                  currentView: getCurrentView(),
-                  setCurrentView: handleRemoteNavigate
-                }} 
-              />
-            )} 
+            element={RemoteApp2 && <RemoteApp2 onNavigate={onNavigate} />} 
+          />
+          <Route 
+            path="/app3" 
+            element={
+              <div>
+                <h2>Host App 3 Content</h2>
+                <p>This is a host app route without remote loading.</p>
+              </div>
+            } 
           />
           <Route path="/" element={<div>Select a remote app</div>} />
         </Routes>
