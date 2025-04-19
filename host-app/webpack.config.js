@@ -34,15 +34,13 @@ module.exports = {
         './store': './src/store/index.js',
         './actions': './src/store/counter/actions.js',
       },
-      // remotes: {
-      //   remoteApp: 'remoteApp@http://localhost:3001/remoteEntry.js',
-      // },
       shared: {
         react: { singleton: true, eager: true, requiredVersion: '^18.0.0' },
         'react-dom': { singleton: true, eager: true, requiredVersion: '^18.0.0' },
         'react-redux': { singleton: true, eager: true, requiredVersion: '^9.1.0' },
         redux: { singleton: true, eager: true, requiredVersion: '^5.0.1' },
-        'redux-saga': { singleton: true, eager: true, requiredVersion: '^1.3.0' }
+        'redux-saga': { singleton: true, eager: true, requiredVersion: '^1.3.0' },
+        antd: { singleton: true, eager: true, requiredVersion: '^5.0.0' }
       },
     }),
   ],
