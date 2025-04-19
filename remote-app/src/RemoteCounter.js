@@ -1,9 +1,22 @@
 import React from 'react';
 import { Table, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import store from 'hostApp/store';
-import { increment, decrement } from 'hostApp/actions';
-import './RemoteCounter.css';
+import styled from 'styled-components';
+
+const StyledTable = styled(Table)`
+  .ant-table {
+    .ant-table-thead > tr > th {
+      font-size: 18px;
+      font-weight: bold;
+      background-color: #ffa39e;
+      color: #fff;
+    }
+
+    .ant-table-tbody > tr > td {
+      font-size: 16px;
+    }
+  }
+`;
 
 const RemoteCounter = () => {
   console.log('RemoteCounter 렌더링');
@@ -75,7 +88,7 @@ const RemoteCounter = () => {
       
       <div style={{ marginTop: '20px' }}>
         <h3>Ant Design Table Example</h3>
-        <Table dataSource={dataSource} columns={columns} />
+        <StyledTable dataSource={dataSource} columns={columns} />
       </div>
     </div>
   );
