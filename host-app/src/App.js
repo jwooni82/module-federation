@@ -7,21 +7,28 @@ const { loadRemoteModule } = require('./component/loadRemoteModule');
 
 const App = () => {
   const [RemoteApp, setRemoteApp] = useState(null);
+  const [RemoteApp2, setRemoteApp2] = useState(null);
 
   useEffect(() => {
-    const loadComponent = async () => {
+    const loadComponents = async () => {
       try {
-        const module = await loadRemoteModule('http://localhost:3001/remoteEntry.js', 'remoteApp', './RemoteApp');
-        console.log("module = ", module);
-        if (module && module.default) {
-          setRemoteApp(() => module.default);
+        const [module1, module2] = await Promise.all([
+          loadRemoteModule('http://localhost:3001/remoteEntry.js', 'remoteApp', './RemoteApp'),
+          loadRemoteModule('http://localhost:3002/remoteEntry.js', 'remoteApp2', './RemoteApp')
+        ]);
+        
+        if (module1 && module1.default) {
+          setRemoteApp(() => module1.default);
+        }
+        if (module2 && module2.default) {
+          setRemoteApp2(() => module2.default);
         }
       } catch (error) {
-        console.error('Failed to load RemoteApp:', error);
+        console.error('Failed to load RemoteApps:', error);
       }
     };
 
-    loadComponent();
+    loadComponents();
   }, []);
 
   // host-app의 테이블 데이터
@@ -75,9 +82,15 @@ const App = () => {
           <Table dataSource={hostDataSource} columns={hostColumns} />
         </div>
 
-        <div>
-          <h2>Remote Component</h2>
-          {RemoteApp && <RemoteApp />}
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <div style={{ flex: 1 }}>
+            <h2>Remote App 1</h2>
+            {RemoteApp && <RemoteApp />}
+          </div>
+          <div style={{ flex: 1 }}>
+            <h2>Remote App 2</h2>
+            {RemoteApp2 && <RemoteApp2 />}
+          </div>
         </div>
       </div>
     </Provider>

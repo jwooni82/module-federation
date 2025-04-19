@@ -7,7 +7,7 @@
     "name": "module-federation-integrated",
     "version": "1.0.0",
     "scripts": {
-      "start": "concurrently \"cd host-app && npm run start\" \"cd remote-app && npm run start\""
+      "start": "concurrently \"cd host-app && npm run start\" \"cd remote-app && npm run start\" \"cd remote-app2 && npm run start\""
     },
     "devDependencies": {
       "concurrently": "^8.2.2"

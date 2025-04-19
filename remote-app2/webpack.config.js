@@ -7,7 +7,7 @@ module.exports = {
   entry: './src/index',
   mode: 'development',
   devServer: {
-    port: 3000,
+    port: 3002,
   },
   output: {
     publicPath: 'auto',
@@ -29,22 +29,21 @@ module.exports = {
       template: './public/index.html',
     }),
     new ModuleFederationPlugin({
-      name: 'hostApp',
-      filename: 'hostEntry.js',
+      name: 'remoteApp2',
+      filename: 'remoteEntry.js',
       exposes: {
-        './store': './src/store/index.js',
-        './actions': './src/store/counter/actions.js',
+        './RemoteCounter': './src/RemoteCounter',
+        './BigComponent': './src/BigComponent',
+        './RemoteApp': './src/RemoteApp'
       },
       remotes: {
-        remoteApp: 'remoteApp@http://localhost:3001/remoteEntry.js',
-        remoteApp2: 'remoteApp2@http://localhost:3002/remoteEntry.js',
+        hostApp: 'hostApp@http://localhost:3000/hostEntry.js',
       },
+      //eager: false (기본값)	해당 모듈을 런타임에서 필요할 때 로딩 (지연 로딩, lazy loading)
+      //eager: true	해당 모듈을 즉시 로딩 → remoteEntry.js에 바로 포함됨
       shared: {
         react: { singleton: true, eager: true, requiredVersion: '^18.0.0' },
         'react-dom': { singleton: true, eager: true, requiredVersion: '^18.0.0' },
-        'react-redux': { singleton: true, eager: true, requiredVersion: '^9.1.0' },
-        redux: { singleton: true, eager: true, requiredVersion: '^5.0.1' },
-        'redux-saga': { singleton: true, eager: true, requiredVersion: '^1.3.0' },
         antd: { singleton: true, eager: true, requiredVersion: '^5.0.0' },
         'styled-components': { singleton: true, eager: true, requiredVersion: '^6.0.0' },
         'react-router-dom': { singleton: true, eager: true, requiredVersion: '^6.20.0' }
@@ -53,7 +52,7 @@ module.exports = {
     new BundleAnalyzerPlugin({
       analyzerMode: 'server',
       analyzerHost: '127.0.0.1',
-      analyzerPort: 8888,
+      analyzerPort: 8890,
       openAnalyzer: true,
     }),
   ],
