@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
 const path = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   entry: './src/index',
@@ -20,6 +21,13 @@ module.exports = {
         options: {
           presets: ['@babel/preset-react'],
         },
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ],
       },
     ],
   },
@@ -43,8 +51,15 @@ module.exports = {
         'react-redux': { singleton: true, eager: true, requiredVersion: '^9.1.0' },
         redux: { singleton: true, eager: true, requiredVersion: '^5.0.1' },
         'redux-saga': { singleton: true, eager: true, requiredVersion: '^1.3.0' },
-        antd: { singleton: true}
+        antd: { singleton: true, eager: true, requiredVersion: '^5.0.0' },
+        'styled-components': { singleton: true, eager: true, requiredVersion: '^6.0.0' }
       },
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'server',
+      analyzerHost: '127.0.0.1',
+      analyzerPort: 8889,
+      openAnalyzer: true,
     }),
   ],
 };

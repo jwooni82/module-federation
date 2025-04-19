@@ -3,6 +3,7 @@ import { Table, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import store from 'hostApp/store';
 import { increment, decrement } from 'hostApp/actions';
+import './RemoteCounter.css';
 
 const RemoteCounter = () => {
   console.log('RemoteCounter 렌더링');
