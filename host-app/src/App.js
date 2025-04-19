@@ -6,18 +6,18 @@ import { Table, Button } from 'antd';
 const { loadRemoteModule } = require('./component/loadRemoteModule');
 
 const App = () => {
-  const [RemoteCounter, setRemoteCounter] = useState(null);
+  const [RemoteApp, setRemoteApp] = useState(null);
 
   useEffect(() => {
     const loadComponent = async () => {
       try {
-        const module = await loadRemoteModule('http://localhost:3001/remoteEntry.js', 'remoteApp', './RemoteCounter');
+        const module = await loadRemoteModule('http://localhost:3001/remoteEntry.js', 'remoteApp', './RemoteApp');
         console.log("module = ", module);
         if (module && module.default) {
-          setRemoteCounter(() => module.default);
+          setRemoteApp(() => module.default);
         }
       } catch (error) {
-        console.error('Failed to load RemoteCounter:', error);
+        console.error('Failed to load RemoteApp:', error);
       }
     };
 
@@ -77,7 +77,7 @@ const App = () => {
 
         <div>
           <h2>Remote Component</h2>
-          {RemoteCounter && <RemoteCounter />}
+          {RemoteApp && <RemoteApp />}
         </div>
       </div>
     </Provider>

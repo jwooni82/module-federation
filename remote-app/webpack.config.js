@@ -34,6 +34,7 @@ module.exports = {
       exposes: {
         './RemoteCounter': './src/RemoteCounter',
         './BigComponent': './src/BigComponent',
+        './RemoteApp': './src/RemoteApp'
       },
       remotes: {
         hostApp: 'hostApp@http://localhost:3000/hostEntry.js',
@@ -42,7 +43,8 @@ module.exports = {
         react: { singleton: true, eager: true, requiredVersion: '^18.0.0' },
         'react-dom': { singleton: true, eager: true, requiredVersion: '^18.0.0' },
         antd: { singleton: true, eager: true, requiredVersion: '^5.0.0' },
-        'styled-components': { singleton: true, eager: true, requiredVersion: '^6.0.0' }
+        'styled-components': { singleton: true, eager: true, requiredVersion: '^6.0.0' },
+        'react-router-dom': { singleton: true, eager: true, requiredVersion: '^6.20.0' }
       },
     }),
     new BundleAnalyzerPlugin({
