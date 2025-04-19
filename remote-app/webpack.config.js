@@ -43,7 +43,7 @@ module.exports = {
         'react-redux': { singleton: true, eager: true, requiredVersion: '^9.1.0' },
         redux: { singleton: true, eager: true, requiredVersion: '^5.0.1' },
         'redux-saga': { singleton: true, eager: true, requiredVersion: '^1.3.0' },
-        antd: { singleton: true, eager: true, requiredVersion: '^5.0.0' }
+        antd: { singleton: true}
       },
     }),
   ],
