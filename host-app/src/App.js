@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import store from './store';
 import { Table, Button } from 'antd';
 
@@ -9,8 +9,8 @@ const { loadRemoteModule } = require('./component/loadRemoteModule');
 const AppContent = () => {
   const [RemoteApp, setRemoteApp] = useState(null);
   const [RemoteApp2, setRemoteApp2] = useState(null);
-  const [remoteView, setRemoteView] = useState('counter');
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadComponents = async () => {
@@ -35,7 +35,12 @@ const AppContent = () => {
   }, []);
 
   const handleRemoteNavigate = (view) => {
-    setRemoteView(view);
+    const currentPath = location.pathname;
+    if (currentPath.startsWith('/app1')) {
+      navigate(`/app1/${view}`);
+    } else if (currentPath.startsWith('/app2')) {
+      navigate(`/app2/${view}`);
+    }
   };
 
   // host-app의 테이블 데이터
@@ -79,6 +84,12 @@ const AppContent = () => {
     },
   ];
 
+  const getCurrentView = () => {
+    const path = location.pathname;
+    if (path.endsWith('/big')) return 'big';
+    return 'counter';
+  };
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Host Application</h1>
@@ -89,23 +100,37 @@ const AppContent = () => {
       </div>
 
       <div style={{ marginBottom: '20px' }}>
-        <Link to="/app1" style={{ marginRight: '10px' }}>
-          <Button type={location.pathname === '/app1' ? 'primary' : 'default'}>Remote App 1</Button>
+        <Link to="/app1/counter" style={{ marginRight: '10px' }}>
+          <Button type={location.pathname.startsWith('/app1') ? 'primary' : 'default'}>Remote App 1</Button>
         </Link>
-        <Link to="/app2">
-          <Button type={location.pathname === '/app2' ? 'primary' : 'default'}>Remote App 2</Button>
+        <Link to="/app2/counter">
+          <Button type={location.pathname.startsWith('/app2') ? 'primary' : 'default'}>Remote App 2</Button>
         </Link>
       </div>
 
       <div>
         <Routes>
           <Route 
-            path="/app1" 
-            element={RemoteApp && <RemoteApp onNavigate={{ currentView: remoteView, setCurrentView: handleRemoteNavigate }} />} 
+            path="/app1/*" 
+            element={RemoteApp && (
+              <RemoteApp 
+                onNavigate={{
+                  currentView: getCurrentView(),
+                  setCurrentView: handleRemoteNavigate
+                }} 
+              />
+            )} 
           />
           <Route 
-            path="/app2" 
-            element={RemoteApp2 && <RemoteApp2 onNavigate={{ currentView: remoteView, setCurrentView: handleRemoteNavigate }} />} 
+            path="/app2/*" 
+            element={RemoteApp2 && (
+              <RemoteApp2 
+                onNavigate={{
+                  currentView: getCurrentView(),
+                  setCurrentView: handleRemoteNavigate
+                }} 
+              />
+            )} 
           />
           <Route path="/" element={<div>Select a remote app</div>} />
         </Routes>

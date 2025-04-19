@@ -25,11 +25,17 @@ const Nav = styled.nav`
 `;
 
 const RemoteApp = ({ onNavigate }) => {
+  const handleClick = (view) => {
+    if (onNavigate && onNavigate.setCurrentView) {
+      onNavigate.setCurrentView(view);
+    }
+  };
+
   return (
     <div>
       <Nav>
-        <button onClick={() => onNavigate('counter')}>Counter</button>
-        <button onClick={() => onNavigate('big')}>Big Component</button>
+        <button onClick={() => handleClick('counter')}>Counter</button>
+        <button onClick={() => handleClick('big')}>Big Component</button>
       </Nav>
       <div>
         {onNavigate.currentView === 'counter' && <RemoteCounter />}
