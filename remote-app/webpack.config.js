@@ -47,11 +47,11 @@ module.exports = {
         'react-router-dom': { singleton: true, eager: true, requiredVersion: '^6.20.0' }
       },
     }),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'server',
-      analyzerHost: '127.0.0.1',
-      analyzerPort: 8889,
-      openAnalyzer: true,
-    }),
+    // new BundleAnalyzerPlugin({
+    //   analyzerMode: 'server',
+    //   analyzerHost: '127.0.0.1',
+    //   analyzerPort: 8889,
+    //   openAnalyzer: true,
+    // }),
   ],
 };
