@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
 const path = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   entry: './src/index',
@@ -42,6 +43,12 @@ module.exports = {
         'redux-saga': { singleton: true, eager: true, requiredVersion: '^1.3.0' },
         antd: { singleton: true, eager: true, requiredVersion: '^5.0.0' }
       },
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'server',
+      analyzerHost: '127.0.0.1',
+      analyzerPort: 8888,
+      openAnalyzer: true,
     }),
   ],
 };
