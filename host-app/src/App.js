@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Provider, useSelector, useDispatch } from 'react-redux';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Table, Button } from 'antd';
 import styled from 'styled-components';
 import store from './store';
@@ -21,22 +21,44 @@ const StyledTable = styled(Table)`
   }
 `;
 
+const RemoteApp = () => {
+  const { appName } = useParams();
+  const [currentView, setCurrentView] = useState('counter');
+  const navigate = useNavigate();
+
+  const handleRemoteNavigate = (view) => {
+    setCurrentView(view);
+    navigate(`/${appName}/${view}`);
+  };
+
+  const getRemoteAppConfig = () => {
+    if (appName === 'remoteApp') {
+      return { port: 3001, name: 'remoteApp' };
+    } else if (appName === 'remoteApp2') {
+      return { port: 3002, name: 'remoteApp2' };
+    }
+    return null;
+  };
+
+  const config = getRemoteAppConfig();
+  if (!config) return <div>Select a remote app</div>;
+
+  return (
+    <DynamicComponent
+      path={`/${appName}`}
+      port={config.port}
+      name={config.name}
+      onNavigate={{ currentView, setCurrentView: handleRemoteNavigate }}
+      hostStore={store}
+    />
+  );
+};
+
 const AppContent = () => {
-  const [RemoteApp, setRemoteApp] = useState(null);
-  const [RemoteApp2, setRemoteApp2] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
   const hostCount = useSelector(state => state.count);
   const dispatch = useDispatch();
-
-  const handleRemoteNavigate = (view) => {
-    const currentPath = location.pathname;
-    if (currentPath.startsWith('/app1')) {
-      navigate(`/app1/${view}`);
-    } else if (currentPath.startsWith('/app2')) {
-      navigate(`/app2/${view}`);
-    }
-  };
 
   // host-app의 테이블 데이터
   const hostDataSource = [
@@ -79,16 +101,8 @@ const AppContent = () => {
     },
   ];
 
-  const getCurrentView = () => {
-    const path = location.pathname;
-    if (path.endsWith('/big')) return 'big';
-    return 'counter';
-  };
-
-  const onNavigate = {
-    currentView: getCurrentView(),
-    setCurrentView: handleRemoteNavigate
-  };
+  const isRemoteApp = location.pathname.startsWith('/remoteApp/');
+  const isRemoteApp2 = location.pathname.startsWith('/remoteApp2/');
 
   return (
     <div style={{ padding: '20px' }}>
@@ -107,45 +121,24 @@ const AppContent = () => {
       </div>
 
       <div style={{ marginBottom: '20px' }}>
-        <Link to="/app1/counter" style={{ marginRight: '10px' }}>
-          <Button type={location.pathname.startsWith('/app1') ? 'primary' : 'default'}>Remote App 1</Button>
-        </Link>
-        <Link to="/app2/counter" style={{ marginRight: '10px' }}>
-          <Button type={location.pathname.startsWith('/app2') ? 'primary' : 'default'}>Remote App 2</Button>
-        </Link>
+        <Button 
+          type={isRemoteApp ? 'primary' : 'default'}
+          onClick={() => navigate('/remoteApp/counter')}
+        >
+          Remote App
+        </Button>
+        <Button 
+          type={isRemoteApp2 ? 'primary' : 'default'}
+          onClick={() => navigate('/remoteApp2/counter')}
+        >
+          Remote App 2
+        </Button>
       </div>
 
-      <div>
-        <Routes>
-          <Route 
-            path="/app1/*" 
-            element={
-              <DynamicComponent
-                path={location.pathname}
-                port={3001}
-                name="remoteApp"
-                //onLoaded={setRemoteApp}
-                onNavigate={onNavigate}
-                hostStore={store}
-              />
-            }
-          />
-          <Route 
-            path="/app2/*" 
-            element={
-              <DynamicComponent
-                path={location.pathname}
-                port={3002}
-                name="remoteApp2"
-                //onLoaded={setRemoteApp2}
-                onNavigate={onNavigate}
-                hostStore={store}
-              />
-            }
-          />
-          <Route path="/" element={<div>Select a remote app</div>} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/:appName/*" element={<RemoteApp />} />
+        <Route path="/" element={<div>Select a remote app</div>} />
+      </Routes>
     </div>
   );
 };
