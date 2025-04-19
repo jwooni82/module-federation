@@ -12,21 +12,23 @@ const AppContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // RemoteApp1은 항상 로드
+  // RemoteApp1은 app1로 들어갈 때만 로드
   useEffect(() => {
     const loadRemoteApp = async () => {
-      try {
-        const module = await loadRemoteModule('http://localhost:3001/remoteEntry.js', 'remoteApp', './RemoteApp');
-        if (module && module.default) {
-          setRemoteApp(() => module.default);
+      if (location.pathname.startsWith('/app1')) {
+        try {
+          const module = await loadRemoteModule('http://localhost:3001/remoteEntry.js', 'remoteApp', './RemoteApp');
+          if (module && module.default) {
+            setRemoteApp(() => module.default);
+          }
+        } catch (error) {
+          console.error('Failed to load RemoteApp:', error);
         }
-      } catch (error) {
-        console.error('Failed to load RemoteApp:', error);
       }
     };
 
     loadRemoteApp();
-  }, []);
+  }, [location.pathname]);
 
   // RemoteApp2는 app2로 들어갈 때만 로드
   useEffect(() => {
