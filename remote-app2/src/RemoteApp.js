@@ -1,5 +1,4 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import RemoteCounter from './RemoteCounter';
 import BigComponent from './BigComponent';
 import styled from 'styled-components';
@@ -8,47 +7,35 @@ const Nav = styled.nav`
   background-color: #f0f0f0;
   padding: 10px;
   margin-bottom: 20px;
-  
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 20px;
-  }
-  
-  a {
-    text-decoration: none;
+  border-radius: 4px;
+
+  button {
+    margin-right: 15px;
+    background: none;
+    border: none;
     color: #333;
-    font-weight: bold;
-    
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
+
     &:hover {
       color: #1890ff;
     }
   }
 `;
 
-const RemoteApp = () => {
+const RemoteApp = ({ onNavigate }) => {
   return (
-    <BrowserRouter>
+    <div>
+      <Nav>
+        <button onClick={() => onNavigate('counter')}>Counter</button>
+        <button onClick={() => onNavigate('big')}>Big Component</button>
+      </Nav>
       <div>
-        <Nav>
-          <ul>
-            <li>
-              <Link to="/">Remote Counter</Link>
-            </li>
-            <li>
-              <Link to="/big">Big Component</Link>
-            </li>
-          </ul>
-        </Nav>
-        
-        <Routes>
-          <Route path="/" element={<RemoteCounter />} />
-          <Route path="/big" element={<BigComponent />} />
-        </Routes>
+        {onNavigate.currentView === 'counter' && <RemoteCounter />}
+        {onNavigate.currentView === 'big' && <BigComponent />}
       </div>
-    </BrowserRouter>
+    </div>
   );
 };
 
