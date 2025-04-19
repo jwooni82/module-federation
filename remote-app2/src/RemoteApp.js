@@ -26,16 +26,23 @@ const Nav = styled.nav`
   }
 `;
 
-const RemoteApp = ({ onNavigate, hostStore }) => {
+const RemoteApp = (props = {}) => {
+  console.log("RemoteApp props = " , props);
+  if(props == null) {
+    return null;
+  }
+  const { onNavigate , hostStore } = props;
+  const { currentView = 'counter', setCurrentView = () => {} } = onNavigate;
+
   return (
     <Provider store={remoteStore}>
       <div>
         <Nav>
-          <button onClick={() => onNavigate.setCurrentView('counter')}>Counter</button>
-          <button onClick={() => onNavigate.setCurrentView('big')}>Big Component</button>
+          <button onClick={() => setCurrentView('counter')}>Counter</button>
+          <button onClick={() => setCurrentView('big')}>Big Component</button>
         </Nav>
-        {onNavigate.currentView === 'counter' && <RemoteCounter hostStore={hostStore} />}
-        {onNavigate.currentView === 'big' && <BigComponent />}
+        {currentView === 'counter' && <RemoteCounter hostStore={hostStore} />}
+        {currentView === 'big' && <BigComponent />}
       </div>
     </Provider>
   );

@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Table, Button } from 'antd';
 import styled from 'styled-components';
-import { StoreContext } from './store/context';
 import store from './store';
-
-const { loadRemoteModule } = require('./component/loadRemoteModule');
+import DynamicComponent from './component/DynamicComponent';
 
 const StyledTable = styled(Table)`
   .ant-table {
@@ -30,46 +28,6 @@ const AppContent = () => {
   const navigate = useNavigate();
   const hostCount = useSelector(state => state.count);
   const dispatch = useDispatch();
-
-  // RemoteApp1은 app1로 들어갈 때만 로드
-  useEffect(() => {
-    const loadRemoteApp = async () => {
-      if (location.pathname.startsWith('/app1')) {
-        try {
-          const module = await loadRemoteModule('http://localhost:3001/remoteEntry.js', 'remoteApp', './RemoteApp');
-          if (module && module.default) {
-            setRemoteApp(() => module.default);
-          }
-        } catch (error) {
-          console.error('Failed to load RemoteApp:', error);
-        }
-      } else {
-        setRemoteApp(null);
-      }
-    };
-
-    loadRemoteApp();
-  }, [location.pathname]);
-
-  // RemoteApp2는 app2로 들어갈 때만 로드
-  useEffect(() => {
-    const loadRemoteApp2 = async () => {
-      if (location.pathname.startsWith('/app2')) {
-        try {
-          const module = await loadRemoteModule('http://localhost:3002/remoteEntry.js', 'remoteApp2', './RemoteApp');
-          if (module && module.default) {
-            setRemoteApp2(() => module.default);
-          }
-        } catch (error) {
-          console.error('Failed to load RemoteApp2:', error);
-        }
-      } else {
-        setRemoteApp2(null);
-      }
-    };
-
-    loadRemoteApp2();
-  }, [location.pathname]);
 
   const handleRemoteNavigate = (view) => {
     const currentPath = location.pathname;
@@ -133,58 +91,62 @@ const AppContent = () => {
   };
 
   return (
-    <StoreContext.Provider value={store}>
-      <div style={{ padding: '20px' }}>
-        <h1>Host Application</h1>
-        
-        <div style={{ marginBottom: '20px' }}>
-          <h2>Host Counter: {hostCount}</h2>
-          <Button type="primary" onClick={() => dispatch({ type: 'INCREMENT_HOST' })}>
-            Increase Host Counter
-          </Button>
-        </div>
-
-        <div style={{ marginBottom: '20px' }}>
-          <h2>Host App Table</h2>
-          <StyledTable dataSource={hostDataSource} columns={hostColumns} />
-        </div>
-
-        <div style={{ marginBottom: '20px' }}>
-          <Link to="/app1/counter" style={{ marginRight: '10px' }}>
-            <Button type={location.pathname.startsWith('/app1') ? 'primary' : 'default'}>Remote App 1</Button>
-          </Link>
-          <Link to="/app2/counter" style={{ marginRight: '10px' }}>
-            <Button type={location.pathname.startsWith('/app2') ? 'primary' : 'default'}>Remote App 2</Button>
-          </Link>
-          <Link to="/app3">
-            <Button type={location.pathname.startsWith('/app3') ? 'primary' : 'default'}>Host App 3</Button>
-          </Link>
-        </div>
-
-        <div>
-          <Routes>
-            <Route 
-              path="/app1/*" 
-              element={RemoteApp && <RemoteApp onNavigate={onNavigate} hostStore={store} />} 
-            />
-            <Route 
-              path="/app2/*" 
-              element={RemoteApp2 && <RemoteApp2 onNavigate={onNavigate} hostStore={store} />} 
-            />
-            <Route 
-              path="/app3" 
-              element={
-                <div>
-                  <h2>Host App 3 Content</h2>
-                  <p>This is a host app route without remote loading.</p>
-                </div>
-              } 
-            />
-            <Route path="/" element={<div>Select a remote app</div>} />
-          </Routes>
-        </div>
+    <div style={{ padding: '20px' }}>
+      <h1>Host Application</h1>
+      
+      <div style={{ marginBottom: '20px' }}>
+        <h2>Host Counter: {hostCount}</h2>
+        <Button type="primary" onClick={() => dispatch({ type: 'INCREMENT_HOST' })}>
+          Increase Host Counter
+        </Button>
       </div>
-    </StoreContext.Provider>
+
+      <div style={{ marginBottom: '20px' }}>
+        <h2>Host App Table</h2>
+        <StyledTable dataSource={hostDataSource} columns={hostColumns} />
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <Link to="/app1/counter" style={{ marginRight: '10px' }}>
+          <Button type={location.pathname.startsWith('/app1') ? 'primary' : 'default'}>Remote App 1</Button>
+        </Link>
+        <Link to="/app2/counter" style={{ marginRight: '10px' }}>
+          <Button type={location.pathname.startsWith('/app2') ? 'primary' : 'default'}>Remote App 2</Button>
+        </Link>
+      </div>
+
+      <div>
+        <Routes>
+          <Route 
+            path="/app1/*" 
+            element={
+              <DynamicComponent
+                path={location.pathname}
+                port={3001}
+                name="remoteApp"
+                //onLoaded={setRemoteApp}
+                onNavigate={onNavigate}
+                hostStore={store}
+              />
+            }
+          />
+          <Route 
+            path="/app2/*" 
+            element={
+              <DynamicComponent
+                path={location.pathname}
+                port={3002}
+                name="remoteApp2"
+                //onLoaded={setRemoteApp2}
+                onNavigate={onNavigate}
+                hostStore={store}
+              />
+            }
+          />
+          <Route path="/" element={<div>Select a remote app</div>} />
+        </Routes>
+      </div>
+    </div>
   );
 };
 
