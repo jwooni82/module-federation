@@ -39,10 +39,12 @@ module.exports = {
       remotes: {
         hostApp: 'hostApp@http://localhost:3000/hostEntry.js',
       },
+      //eager: false (기본값)	해당 모듈을 런타임에서 필요할 때 로딩 (지연 로딩, lazy loading)
+      //eager: true	해당 모듈을 즉시 로딩 → remoteEntry.js에 바로 포함됨
       shared: {
         react: { singleton: true, eager: true, requiredVersion: '^18.0.0' },
         'react-dom': { singleton: true, eager: true, requiredVersion: '^18.0.0' },
-        antd: { singleton: true, eager: true, requiredVersion: '^5.0.0' },
+        antd: { singleton: true, eager: false, requiredVersion: '^5.0.0' },
         'styled-components': { singleton: true, eager: true, requiredVersion: '^6.0.0' },
         'react-router-dom': { singleton: true, eager: true, requiredVersion: '^6.20.0' }
       },
