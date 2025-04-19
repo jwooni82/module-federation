@@ -34,6 +34,9 @@ module.exports = {
       exposes: {
         './RemoteApp': './src/RemoteApp',
       },
+      remotes: {
+        remoteApp2: 'remoteApp2@http://localhost:3002/remoteEntry.js',
+      },
       shared: {
         react: { singleton: true, eager: true, requiredVersion: '^18.0.0' },
         'react-dom': { singleton: true, eager: true, requiredVersion: '^18.0.0' },
@@ -48,4 +51,8 @@ module.exports = {
       template: './public/index.html',
     }),
   ],
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
+  target: 'web',
 };

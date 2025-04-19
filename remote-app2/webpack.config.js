@@ -33,6 +33,7 @@ module.exports = {
       filename: 'remoteEntry.js',
       exposes: {
         './RemoteApp': './src/RemoteApp',
+        './BigComponent': './src/BigComponent',
       },
       shared: {
         react: { singleton: true, eager: true, requiredVersion: '^18.0.0' },
@@ -48,4 +49,8 @@ module.exports = {
       template: './public/index.html',
     }),
   ],
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
+  target: 'web',
 };
