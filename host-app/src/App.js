@@ -12,27 +12,39 @@ const AppContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // RemoteApp1은 항상 로드
   useEffect(() => {
-    const loadComponents = async () => {
+    const loadRemoteApp = async () => {
       try {
-        const [module1, module2] = await Promise.all([
-          loadRemoteModule('http://localhost:3001/remoteEntry.js', 'remoteApp', './RemoteApp'),
-          loadRemoteModule('http://localhost:3002/remoteEntry.js', 'remoteApp2', './RemoteApp')
-        ]);
-        
-        if (module1 && module1.default) {
-          setRemoteApp(() => module1.default);
-        }
-        if (module2 && module2.default) {
-          setRemoteApp2(() => module2.default);
+        const module = await loadRemoteModule('http://localhost:3001/remoteEntry.js', 'remoteApp', './RemoteApp');
+        if (module && module.default) {
+          setRemoteApp(() => module.default);
         }
       } catch (error) {
-        console.error('Failed to load RemoteApps:', error);
+        console.error('Failed to load RemoteApp:', error);
       }
     };
 
-    loadComponents();
+    loadRemoteApp();
   }, []);
+
+  // RemoteApp2는 app2로 들어갈 때만 로드
+  useEffect(() => {
+    const loadRemoteApp2 = async () => {
+      if (location.pathname.startsWith('/app2')) {
+        try {
+          const module = await loadRemoteModule('http://localhost:3002/remoteEntry.js', 'remoteApp2', './RemoteApp');
+          if (module && module.default) {
+            setRemoteApp2(() => module.default);
+          }
+        } catch (error) {
+          console.error('Failed to load RemoteApp2:', error);
+        }
+      }
+    };
+
+    loadRemoteApp2();
+  }, [location.pathname]);
 
   const handleRemoteNavigate = (view) => {
     const currentPath = location.pathname;
